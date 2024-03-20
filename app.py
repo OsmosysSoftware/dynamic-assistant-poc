@@ -1,6 +1,6 @@
 import time
 from openai import OpenAI
-import os;
+import os
 
 # gets API Key from environment variable OPENAI_API_KEY
 client = OpenAI(
