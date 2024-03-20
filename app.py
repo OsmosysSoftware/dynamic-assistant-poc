@@ -1,6 +1,6 @@
 import time
 from openai import OpenAI
-import os
+import os;
 
 # gets API Key from environment variable OPENAI_API_KEY
 client = OpenAI(
@@ -9,6 +9,7 @@ client = OpenAI(
 
 policyAssistant = client.beta.assistants.retrieve("asst_E2NTtF5sSbmxT10NvJk9WquB")
 skillAssistant = client.beta.assistants.retrieve("asst_6SndT0pLTqkvJTtCcV8Sfaxd")
+masterAssistant = client.beta.assistants.retrieve("asst_Zw8OIqpkGHeYpcMMttPS6jzt")
 
 thread = client.beta.threads.create()
 
@@ -24,12 +25,36 @@ def runAssistant(assistant_id,thread_id,user_instructions):
         run = client.beta.threads.runs.retrieve(thread_id=thread.id, run_id=run.id)
 
         if run.status == "completed":
-            print("This run has completed!")
-
             break
         else:
-            print("in progress...")
             time.sleep(5)
+
+def classify_question(user_query):
+
+    empty_thread = client.beta.threads.create()
+
+    client.beta.threads.messages.create(
+    empty_thread.id,
+    role="user",
+    content=user_query,
+    )
+    
+    run = client.beta.threads.runs.create(
+    thread_id=empty_thread.id,
+    assistant_id=masterAssistant.id
+    )
+
+    while True:
+        run = client.beta.threads.runs.retrieve(thread_id=empty_thread.id, run_id=run.id)
+
+        if run.status == "completed":
+            messages = client.beta.threads.messages.list(thread_id=empty_thread.id)
+            for message in messages.data:
+                if message.role == "assistant":
+                    return message.content[0].text.value
+                break
+        else:     
+            time.sleep(2)
 
 def handle_user_query():
     while True:
@@ -37,11 +62,11 @@ def handle_user_query():
 
         if user_query.lower() == "exit":
             break
-
-        if "skill" in user_query.lower():
-            runAssistant(skillAssistant.id, thread.id, user_query)
-        elif "policy" in user_query.lower():
-            runAssistant(policyAssistant.id, thread.id, user_query)
+        
+        assistant_id = classify_question(user_query)
+        
+        if assistant_id:
+            runAssistant(assistant_id, thread.id, user_query)
         else:
             print("No assistant found for the query.")
 
