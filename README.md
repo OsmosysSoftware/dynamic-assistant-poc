@@ -7,7 +7,7 @@ This is a POC to demonstrate how to dynamic pick assistant to route queries to r
 
 Make sure you have python(3.11.7) and pip(24.0) installed
 
-To check use these command
+To check, use these command
 
 ```bash
 python --version
