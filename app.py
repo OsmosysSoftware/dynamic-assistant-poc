@@ -1,10 +1,12 @@
 import time
 from openai import OpenAI
-import os;
+import dotenv;
+
+config = dotenv.dotenv_values(".env")
 
 # gets API Key from environment variable OPENAI_API_KEY
 client = OpenAI(
-    api_key= os.getenv("OPENAI_API_KEY"),
+    api_key= config['OPENAI_API_KEY'],
 )
 
 policyAssistant = client.beta.assistants.retrieve("asst_E2NTtF5sSbmxT10NvJk9WquB")
@@ -27,7 +29,7 @@ def runAssistant(assistant_id,thread_id,user_instructions):
         if run.status == "completed":
             break
         else:
-            time.sleep(5)
+            time.sleep(2)
 
 def classify_question(user_query):
 

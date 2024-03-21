@@ -32,7 +32,7 @@ source assistant/bin/activate.fish
 # If you are using the bash shell use this to activate virtual environment
 source assistant/bin/activate
 
-pip install --upgrade openai
+pip install --upgrade openai python-dotenv
 
 python app.py
 ```
