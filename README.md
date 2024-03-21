@@ -1,5 +1,5 @@
 # dynamic-assistant-poc
-This is a POC to demonstrate how to dynamic pick assistant to route queries to related assistant.
+This is a POC to demonstrate how to dynamically pick an assistant to route queries to the related assistant.
 
 
 ## Prerequisites
